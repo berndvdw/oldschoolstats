@@ -5,6 +5,9 @@ import requests
 import configparser
 import time
 
+publisher = pubsub_v1.PublisherClient()
+topic_path = publisher.topic_path('osrs-xp-tracker', 'users')
+
 subscriber = pubsub_v1.SubscriberClient()
 subscription_path = subscriber.subscription_path(
     'osrs-xp-tracker', 'test')
@@ -15,13 +18,16 @@ def get_content(url):
 	soup = BeautifulSoup(raw, 'html.parser')
 	for row in soup.find_all('tr',{'class':'personal-hiscores__row'}):
 		cols = [unidecode(x.text.strip()) for x in row.find_all('td')]
-		cols = [x.replace(',','') for x in cols]
+		cols = [x.replace(',','') for x in cols]	
 		
-		# send message col 1 to user scraper
+		data = u'{}'.format(cols[1])
+		data = data.encode('utf-8')	
+		publisher.publish(topic_path, data=data)
+		print('Published message.')	
+	time.sleep(5)	
 
 def callback(message):
     get_content(message)
-    time.sleep(1)
     message.ack()
 
 subscriber.subscribe(subscription_path, callback=callback)
