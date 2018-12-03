@@ -1,1 +1,0 @@
-from .hiscores import getHiscorePage, getUser

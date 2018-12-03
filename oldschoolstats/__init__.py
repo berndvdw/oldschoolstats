@@ -1,0 +1,1 @@
+from .hiscores import Hiscores
