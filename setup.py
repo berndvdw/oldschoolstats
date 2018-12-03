@@ -5,7 +5,7 @@ setup(
 	description='',
 	author='Bernd van der Wielen',
 	url='',
-	packages=['Hiscores'],
+	packages=['oldschoolstats'],
 	install_requires=[
 		'requests',
 		'beautifulsoup4',                       
