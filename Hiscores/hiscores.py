@@ -1,5 +1,6 @@
 import requests
 import configparser
+import os
 from collections import namedtuple
 from unidecode import unidecode
 from bs4 import BeautifulSoup
@@ -7,14 +8,19 @@ from bs4 import BeautifulSoup
 class Hiscores:
 
 	def __init__(self):
+		path = os.path.dirname(os.path.abspath(__file__))
+		config_file = path+'/config.ini'
 		self.config = configparser.ConfigParser()
-		self.config.read('config.ini') # adjust this to open with OS
+		self.config.read(config_file) # adjust this to open with OS
+		
 		self.base_url = self.config.get('api', 'base_url')
+		self.skills = self.config.get('data_format','skills').split(',')
+		self.metrics = self.config.get('data_format','hierachy_skills').split(',')
 	
-	def getHiscorePage(self, offset=0):
+	def getHiscorePage(self, user_type='normal', offset=0):
 		url = "{}{}/overall.ws?table=0&page={}".format(
 				self.base_url,
-				self.config.get('types', 'normal'),
+				self.config.get('types', user_type),
 				offset
 			)
 		
@@ -30,9 +36,6 @@ class Hiscores:
 		return players
 
 	def getUser(self,displayname,user_type='normal'):
-		skills = self.config.get('data_format','skills').split(',')
-		metrics = self.config.get('data_format','hierachy_skills').split(',')
-
 		url = "{}{}/{}?player={}".format(
 			self.base_url,
 			self.config.get('types', user_type),
@@ -42,9 +45,9 @@ class Hiscores:
 		data = requests.get(url.format(displayname)).text.split('\n')
 		
 		obj = {}
-		for i,skill in enumerate(skills):
+		for i,skill in enumerate(self.skills):
 			obj[skill] = {}
 			skill_data = data[i].split(",")
-			for c, part in enumerate(metrics):
+			for c, part in enumerate(self.metrics):
 				obj[skill][part] = int(skill_data[c])
 		return {displayname: obj}
