@@ -8,8 +8,7 @@ from bs4 import BeautifulSoup
 class Hiscores:
 
 	def __init__(self):
-		path = os.path.dirname(os.path.abspath(__file__))
-		config_file = path+'/config.ini'
+		config_file = os.path.join(os.path.dirname(__file__),'config.ini')
 		self.config = configparser.ConfigParser()
 		self.config.read(config_file) # adjust this to open with OS
 		
@@ -51,3 +50,6 @@ class Hiscores:
 			for c, part in enumerate(self.metrics):
 				obj[skill][part] = int(skill_data[c])
 		return {displayname: obj}
+
+test = Hiscores()
+
