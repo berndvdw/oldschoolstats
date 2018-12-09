@@ -9,7 +9,6 @@ class Hiscores:
 
 	def __init__(self):
 		config_file = os.path.join(os.path.dirname(__file__),'config.ini')
-		print(config_file)
 		self.config = configparser.ConfigParser()
 		self.config.read(config_file) # adjust this to open with OS
 		
