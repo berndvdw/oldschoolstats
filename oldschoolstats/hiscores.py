@@ -50,5 +50,3 @@ class Hiscores:
 			for c, part in enumerate(self.metrics):
 				obj[skill][part] = int(skill_data[c])
 		return {displayname: obj}
-
-test = Hiscores()
